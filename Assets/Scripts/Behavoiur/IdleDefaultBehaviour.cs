@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleDefaultBehaviour : IDefaultBehaviour
 {
-	public void Rest()
+	public void Relax(Transform source)
 	{
-		Debug.Log("Ничего не делаю, просто стою на месте");
+		//Debug.Log("Ничего не делаю, просто стою на месте");
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,10 @@ public class Spawner : MonoBehaviour
 {
 	[SerializeField] private Enemy _enemyPrefab;
 	[SerializeField] private List<SpawnPoint> _spawnPoints;
+
+	[SerializeField] private ParticleSystem _deathEffectPrefab;
+
+	[SerializeField] private List<Transform> _patrolPoints;
 
 	private void Awake()
 	{
@@ -16,16 +19,9 @@ public class Spawner : MonoBehaviour
 		}
 	}
 
-	private Enemy CreateEnemy(SpawnPoint spawnPoint)
-	{
-		Enemy enemy = Instantiate(_enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
-		return enemy;
-	}
+	private Enemy CreateEnemy(SpawnPoint spawnPoint) => Instantiate(_enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
 
-	private void Update()
-	{
-		
-	}
+	private ParticleSystem CreateDeathEffect() => Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
 
 	private IDefaultBehaviour FindDefaultBehaviour(SpawnPoint spawnPoint)
 	{
@@ -36,7 +32,7 @@ public class Spawner : MonoBehaviour
 			case EnumDefaultBehavour.Idle:
 				return new IdleDefaultBehaviour();
 			case EnumDefaultBehavour.Patrol:
-				return new PatrolDefaultBehaviour();
+				return new PatrolDefaultBehaviour(_patrolPoints);
 			case EnumDefaultBehavour.WalkRandomly:
 				return new RandomWalkDefaultBehaviour();
 			default:
@@ -55,7 +51,7 @@ public class Spawner : MonoBehaviour
 			case EnumAttackBehaviour.Attack:
 				return new SimpleAttackBehaviour();
 			case EnumAttackBehaviour.Dead:
-				return new DeathAttackBehaviour();
+				return new DeathAttackBehaviour(CreateDeathEffect());
 			default:
 				return new SimpleAttackBehaviour();
 		}

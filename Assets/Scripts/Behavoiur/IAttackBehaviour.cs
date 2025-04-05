@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface IAttackBehaviour
 {
-    void Attack();
+	void Attack(Transform source, Transform target);
 }

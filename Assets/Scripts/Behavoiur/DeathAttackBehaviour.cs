@@ -1,11 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DeathAttackBehaviour : IAttackBehaviour
 {
-	public void Attack()
+	private readonly ParticleSystem _deathEffect;
+
+	public DeathAttackBehaviour(ParticleSystem deathEffect)
 	{
-		Debug.Log("Очень страшно! Я УМЕР!");		
+		_deathEffect = deathEffect;
+	}
+
+	public void Attack(Transform source, Transform target)
+	{
+		_deathEffect.transform.position = source.transform.position;
+
+		source.gameObject.SetActive(false);
+
+		_deathEffect.Play();
+
+		Debug.Log("Очень страшно! Я УМЕР!");
 	}
 }

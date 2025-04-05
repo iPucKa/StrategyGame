@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-	private string _horizontalAxisName = "Horizontal";
-	private string _verticalAxisName = "Vertical";
+	private const string _horizontalAxisName = "Horizontal";
+	private const string _verticalAxisName = "Vertical";
 
 	private float _xInput;
 	private float _yInput;
 
-	private float _deadInputZone = 0.1f;
+	private const float _deadInputZone = 0.1f;
 
-	[SerializeField] private float _moveSpeed = 10;
+	[SerializeField] private float _moveSpeed = 12;
 	[SerializeField] private float _rotateSpeed = 500;
 
 	private Mover _mover;
