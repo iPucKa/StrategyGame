@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PatrolDefaultBehaviour : IDefaultBehaviour
+public class PatrolDefaultBehaviour : IBehaviour
 {
 	private readonly List<Transform> _patrolPoints;
 	private const float _speed = 10f;
@@ -16,18 +16,11 @@ public class PatrolDefaultBehaviour : IDefaultBehaviour
 		_patrolPoints = patrolPoints;
 	}
 
-	public void Relax(Transform source)
+	public void Enter(Transform source, Transform target)
 	{
 		InitializeQueue();
 
-		Vector3 direction = _currentTarget - source.position;
-
-		if (direction.magnitude <= _minDistanceToTarget)
-			SwitchTarget();
-
-		Vector3 normalizedDirection = direction.normalized;
-
-		source.Translate(normalizedDirection * _speed * Time.deltaTime, Space.World);
+		Update(source, target);
 	}
 
 	private void InitializeQueue()
@@ -47,5 +40,22 @@ public class PatrolDefaultBehaviour : IDefaultBehaviour
 	{
 		_currentTarget = _targetsPositions.Dequeue();
 		_targetsPositions.Enqueue(_currentTarget);
+	}
+
+	public void Update(Transform source, Transform target)
+	{
+		Vector3 direction = _currentTarget - source.position;
+
+		if (direction.magnitude <= _minDistanceToTarget)
+			SwitchTarget();
+
+		Vector3 normalizedDirection = direction.normalized;
+
+		source.Translate(normalizedDirection * _speed * Time.deltaTime, Space.World);
+	}
+
+	public void Disable()
+	{
+
 	}
 }

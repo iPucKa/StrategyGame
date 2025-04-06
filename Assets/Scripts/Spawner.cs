@@ -23,7 +23,7 @@ public class Spawner : MonoBehaviour
 
 	private ParticleSystem CreateDeathEffect() => Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
 
-	private IDefaultBehaviour FindDefaultBehaviour(SpawnPoint spawnPoint)
+	private IBehaviour FindDefaultBehaviour(SpawnPoint spawnPoint)
 	{
 		EnumDefaultBehavour defaultBehavour = spawnPoint.DefaultBehavour;
 
@@ -40,7 +40,7 @@ public class Spawner : MonoBehaviour
 		}
 	}
 
-	private IAttackBehaviour FindAttackBehaviour(SpawnPoint spawnPoint)
+	private IBehaviour FindAttackBehaviour(SpawnPoint spawnPoint)
 	{
 		EnumAttackBehaviour attackBehavour = spawnPoint.AttackBehaviour;
 

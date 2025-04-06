@@ -1,9 +1,19 @@
 using UnityEngine;
 
-public class IdleDefaultBehaviour : IDefaultBehaviour
+public class IdleDefaultBehaviour : IBehaviour
 {
-	public void Relax(Transform source)
+	public void Enter(Transform source, Transform target)
 	{
-		//Debug.Log("Ничего не делаю, просто стою на месте");
+		//Debug.Log("Ничего не делаю, просто стою на месте");		
+	}
+
+	public void Update(Transform source, Transform target)
+	{
+		Enter(source, target);
+	}
+
+	public void Disable()
+	{
+
 	}
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DeathAttackBehaviour : IAttackBehaviour
+public class DeathAttackBehaviour : IBehaviour
 {
 	private readonly ParticleSystem _deathEffect;
 
@@ -9,7 +9,7 @@ public class DeathAttackBehaviour : IAttackBehaviour
 		_deathEffect = deathEffect;
 	}
 
-	public void Attack(Transform source, Transform target)
+	public void Enter(Transform source, Transform target)
 	{
 		_deathEffect.transform.position = source.transform.position;
 
@@ -18,5 +18,15 @@ public class DeathAttackBehaviour : IAttackBehaviour
 		_deathEffect.Play();
 
 		Debug.Log("Очень страшно! Я УМЕР!");
+	}
+
+	public void Update(Transform source, Transform target)
+	{
+
+	}
+
+	public void Disable()
+	{
+
 	}
 }

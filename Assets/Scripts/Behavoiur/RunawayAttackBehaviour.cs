@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class RunawayAttackBehaviour : IAttackBehaviour
+public class RunawayAttackBehaviour : IBehaviour
 {
 	private const float _speed = 5f;
 
-	public void Attack(Transform source, Transform target)
+	public void Enter(Transform source, Transform target)
 	{
 		Vector3 direction = source.position - target.position;
 
@@ -13,5 +13,15 @@ public class RunawayAttackBehaviour : IAttackBehaviour
 		Vector3 normalizedDirection = xzDirection.normalized;
 
 		source.transform.Translate(normalizedDirection * _speed * Time.deltaTime, Space.World);
+	}
+
+	public void Update(Transform source, Transform target)
+	{
+		Enter(source, target);
+	}
+
+	public void Disable()
+	{
+
 	}
 }

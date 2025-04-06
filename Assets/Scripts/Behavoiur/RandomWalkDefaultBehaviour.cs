@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RandomWalkDefaultBehaviour : IDefaultBehaviour
+public class RandomWalkDefaultBehaviour : IBehaviour
 {
 	private const int _xRange = 4;
 	private const float _zRange = 4f;
@@ -11,7 +11,7 @@ public class RandomWalkDefaultBehaviour : IDefaultBehaviour
 
 	private float _time;
 
-	public void Relax(Transform source)
+	public void Enter(Transform source, Transform target)
 	{
 		if (_currentTargetPosition == Vector3.zero)
 			GetNewPosition(source);
@@ -20,6 +20,11 @@ public class RandomWalkDefaultBehaviour : IDefaultBehaviour
 
 		if (_time < 1)
 			source.Translate(direction * _speed * Time.deltaTime, Space.World);
+	}
+
+	public void Update(Transform source, Transform target)
+	{
+		Enter(source, target);
 
 		_time += Time.deltaTime;
 
@@ -28,6 +33,12 @@ public class RandomWalkDefaultBehaviour : IDefaultBehaviour
 			_currentTargetPosition = Vector3.zero;
 			_time = 0;
 		}
+	}
+
+	public void Disable()
+	{
+		_currentTargetPosition = Vector3.zero;
+		_time = 0;
 	}
 
 	private void GetNewPosition(Transform source) => _currentTargetPosition = GetRandomPoint(source);

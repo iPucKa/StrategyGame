@@ -5,8 +5,8 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private MeshRenderer _renderer;
 	[SerializeField] private Material _aggredMaterial;
 
-	private IDefaultBehaviour _defaultBehaviour;
-	private IAttackBehaviour _attackBehaviour;
+	private IBehaviour _defaultBehaviour;
+	private IBehaviour _attackBehaviour;
 
 	private float _defaultScale;
 	private float _aggrotScale;
@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 	private bool _hasAggred;
 	private Material _defaultMaterial;
 
-	public void Initialize(IDefaultBehaviour defaultBehaviour, IAttackBehaviour attackBehaviour)
+	public void Initialize(IBehaviour defaultBehaviour, IBehaviour attackBehaviour)
 	{
 		_defaultBehaviour = defaultBehaviour;
 		_attackBehaviour = attackBehaviour;
@@ -29,8 +29,11 @@ public class Enemy : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.GetComponent<Character>() != null)
+		if (other.TryGetComponent(out Character character))
 		{
+			_attackBehaviour.Enter(transform, character.transform);
+			_defaultBehaviour.Disable();
+
 			_hasAggred = true;
 
 			ChangeScale();
@@ -41,13 +44,16 @@ public class Enemy : MonoBehaviour
 	private void OnTriggerStay(Collider other)
 	{
 		if (other.TryGetComponent(out Character character))
-			_attackBehaviour.Attack(transform, character.transform);
+			_attackBehaviour.Update(transform, character.transform);
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.GetComponent<Character>() != null)
+		if (other.TryGetComponent(out Character character))
 		{
+			_defaultBehaviour.Enter(transform, character.transform);
+			_attackBehaviour.Disable();
+
 			_hasAggred = false;
 
 			ChangeScale();
@@ -62,10 +68,8 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
-		if (_hasAggred)
-			return;
-		else
-			_defaultBehaviour.Relax(transform);
+		if (_hasAggred == false)
+			_defaultBehaviour.Update(transform, transform);
 	}
 
 	private void ChangeScale()
@@ -86,8 +90,8 @@ public class Enemy : MonoBehaviour
 			return;
 		}
 
-		if (_hasAggred == false)		
+		if (_hasAggred == false)
 			if (_renderer.material != _defaultMaterial)
-				_renderer.material = _defaultMaterial;		
+				_renderer.material = _defaultMaterial;
 	}
 }
