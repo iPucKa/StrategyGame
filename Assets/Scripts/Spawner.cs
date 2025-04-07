@@ -10,12 +10,15 @@ public class Spawner : MonoBehaviour
 
 	[SerializeField] private List<Transform> _patrolPoints;
 
+	[SerializeField] private Character _target;
+
 	private void Awake()
 	{
 		foreach (SpawnPoint spawnPoint in _spawnPoints)
 		{
 			Enemy enemy = CreateEnemy(spawnPoint);
-			enemy.Initialize(FindDefaultBehaviour(spawnPoint), FindAttackBehaviour(spawnPoint));
+
+			enemy.Initialize(FindDefaultBehaviour(spawnPoint, enemy.transform), FindAttackBehaviour(spawnPoint, enemy.transform, _target.transform));
 		}
 	}
 
@@ -23,7 +26,7 @@ public class Spawner : MonoBehaviour
 
 	private ParticleSystem CreateDeathEffect() => Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
 
-	private IBehaviour FindDefaultBehaviour(SpawnPoint spawnPoint)
+	private IBehaviour FindDefaultBehaviour(SpawnPoint spawnPoint, Transform source)
 	{
 		EnumDefaultBehavour defaultBehavour = spawnPoint.DefaultBehavour;
 
@@ -32,28 +35,28 @@ public class Spawner : MonoBehaviour
 			case EnumDefaultBehavour.Idle:
 				return new IdleDefaultBehaviour();
 			case EnumDefaultBehavour.Patrol:
-				return new PatrolDefaultBehaviour(_patrolPoints);
+				return new PatrolDefaultBehaviour(_patrolPoints, source);
 			case EnumDefaultBehavour.WalkRandomly:
-				return new RandomWalkDefaultBehaviour();
+				return new RandomWalkDefaultBehaviour(source);
 			default:
 				return new IdleDefaultBehaviour();
 		}
 	}
 
-	private IBehaviour FindAttackBehaviour(SpawnPoint spawnPoint)
+	private IBehaviour FindAttackBehaviour(SpawnPoint spawnPoint, Transform source, Transform target)
 	{
 		EnumAttackBehaviour attackBehavour = spawnPoint.AttackBehaviour;
 
 		switch (attackBehavour)
 		{
 			case EnumAttackBehaviour.RunAway:
-				return new RunawayAttackBehaviour();
+				return new RunawayAttackBehaviour(source, target);
 			case EnumAttackBehaviour.Attack:
-				return new SimpleAttackBehaviour();
+				return new SimpleAttackBehaviour(source, target);
 			case EnumAttackBehaviour.Dead:
-				return new DeathAttackBehaviour(CreateDeathEffect());
+				return new DeathAttackBehaviour(CreateDeathEffect(), source);
 			default:
-				return new SimpleAttackBehaviour();
+				return new SimpleAttackBehaviour(source, target);
 		}
 	}
 }

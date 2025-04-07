@@ -11,29 +11,27 @@ public class PatrolDefaultBehaviour : IBehaviour
 
 	private const float _minDistanceToTarget = 0.5f;
 
-	public PatrolDefaultBehaviour(List<Transform> patrolPoints)
+	private readonly Transform _source;
+
+	public PatrolDefaultBehaviour(List<Transform> patrolPoints, Transform source)
 	{
 		_patrolPoints = patrolPoints;
+		_source = source;
 	}
 
-	public void Enter(Transform source, Transform target)
+	public void Enter()
 	{
-		InitializeQueue();
-
-		Update(source, target);
+		Update();
 	}
 
 	private void InitializeQueue()
 	{
-		if (_targetsPositions == null)
-		{
-			_targetsPositions = new Queue<Vector3>();
+		_targetsPositions = new Queue<Vector3>();
 
-			foreach (Transform patrolPoint in _patrolPoints)
-				_targetsPositions.Enqueue(patrolPoint.position);
+		foreach (Transform patrolPoint in _patrolPoints)
+			_targetsPositions.Enqueue(patrolPoint.position);
 
-			SwitchTarget();
-		}
+		SwitchTarget();
 	}
 
 	private void SwitchTarget()
@@ -42,19 +40,22 @@ public class PatrolDefaultBehaviour : IBehaviour
 		_targetsPositions.Enqueue(_currentTarget);
 	}
 
-	public void Update(Transform source, Transform target)
+	public void Update()
 	{
-		Vector3 direction = _currentTarget - source.position;
+		if (_targetsPositions == null)
+			InitializeQueue();
+
+		Vector3 direction = _currentTarget - _source.position;
 
 		if (direction.magnitude <= _minDistanceToTarget)
 			SwitchTarget();
 
 		Vector3 normalizedDirection = direction.normalized;
 
-		source.Translate(normalizedDirection * _speed * Time.deltaTime, Space.World);
+		_source.Translate(normalizedDirection * _speed * Time.deltaTime, Space.World);
 	}
 
-	public void Disable()
+	public void Exit()
 	{
 
 	}

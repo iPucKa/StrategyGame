@@ -5,34 +5,35 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private MeshRenderer _renderer;
 	[SerializeField] private Material _aggredMaterial;
 
-	private IBehaviour _defaultBehaviour;
+	private IBehaviour _defenceBehaviour;
 	private IBehaviour _attackBehaviour;
+	private IBehaviour _currentBehaviour;
 
 	private float _defaultScale;
-	private float _aggrotScale;
+	private float _aggredtScale;
 
 	private bool _hasAggred;
 	private Material _defaultMaterial;
 
 	public void Initialize(IBehaviour defaultBehaviour, IBehaviour attackBehaviour)
 	{
-		_defaultBehaviour = defaultBehaviour;
+		_defenceBehaviour = defaultBehaviour;
 		_attackBehaviour = attackBehaviour;
+		_currentBehaviour = defaultBehaviour;
 	}
 
 	private void Awake()
 	{
 		_defaultScale = transform.localScale.y;
-		_aggrotScale = _defaultScale * 1.2f;
+		_aggredtScale = _defaultScale * 1.2f;
 		_defaultMaterial = _renderer.material;
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.TryGetComponent(out Character character))
+		if (other.GetComponent<Character>())
 		{
-			_attackBehaviour.Enter(transform, character.transform);
-			_defaultBehaviour.Disable();
+			SwitchBehaviour(_attackBehaviour);
 
 			_hasAggred = true;
 
@@ -41,18 +42,11 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerStay(Collider other)
-	{
-		if (other.TryGetComponent(out Character character))
-			_attackBehaviour.Update(transform, character.transform);
-	}
-
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.TryGetComponent(out Character character))
+		if (other.GetComponent<Character>())
 		{
-			_defaultBehaviour.Enter(transform, character.transform);
-			_attackBehaviour.Disable();
+			SwitchBehaviour(_defenceBehaviour);
 
 			_hasAggred = false;
 
@@ -61,21 +55,24 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
-	private void OnDisable()
-	{
-		Destroy(gameObject);
-	}
+	private void OnDisable() => Destroy(gameObject);
 
 	private void Update()
 	{
-		if (_hasAggred == false)
-			_defaultBehaviour.Update(transform, transform);
+		_currentBehaviour.Update();
+	}
+
+	private void SwitchBehaviour(IBehaviour behaviour)
+	{
+		_currentBehaviour.Exit();
+		_currentBehaviour = behaviour;
+		_currentBehaviour.Enter();
 	}
 
 	private void ChangeScale()
 	{
 		if (_hasAggred)
-			transform.localScale = new Vector3(_aggrotScale, _aggrotScale, _aggrotScale);
+			transform.localScale = new Vector3(_aggredtScale, _aggredtScale, _aggredtScale);
 
 		if (_hasAggred == false)
 			if (transform.localScale.y != _defaultScale)

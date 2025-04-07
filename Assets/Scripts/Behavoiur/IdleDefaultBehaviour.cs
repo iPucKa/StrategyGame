@@ -1,18 +1,16 @@
-using UnityEngine;
-
 public class IdleDefaultBehaviour : IBehaviour
 {
-	public void Enter(Transform source, Transform target)
+	public void Enter()
 	{
 		//Debug.Log("Ничего не делаю, просто стою на месте");		
 	}
 
-	public void Update(Transform source, Transform target)
+	public void Update()
 	{
-		Enter(source, target);
+		Enter();
 	}
 
-	public void Disable()
+	public void Exit()
 	{
 
 	}

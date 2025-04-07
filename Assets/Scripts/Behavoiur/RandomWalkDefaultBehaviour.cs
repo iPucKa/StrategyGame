@@ -11,20 +11,27 @@ public class RandomWalkDefaultBehaviour : IBehaviour
 
 	private float _time;
 
-	public void Enter(Transform source, Transform target)
+	private readonly Transform _source;
+
+	public RandomWalkDefaultBehaviour(Transform source)
 	{
-		if (_currentTargetPosition == Vector3.zero)
-			GetNewPosition(source);
-
-		Vector3 direction = (_currentTargetPosition - source.position).normalized;
-
-		if (_time < 1)
-			source.Translate(direction * _speed * Time.deltaTime, Space.World);
+		_source = source;
 	}
 
-	public void Update(Transform source, Transform target)
+	public void Enter()
 	{
-		Enter(source, target);
+		Update();
+	}
+
+	public void Update()
+	{
+		if (_currentTargetPosition == Vector3.zero)
+			_currentTargetPosition = GetRandomPosition(_source);
+
+		Vector3 direction = (_currentTargetPosition - _source.position).normalized;
+
+		if (_time < 1)
+			_source.Translate(direction * _speed * Time.deltaTime, Space.World);
 
 		_time += Time.deltaTime;
 
@@ -35,15 +42,13 @@ public class RandomWalkDefaultBehaviour : IBehaviour
 		}
 	}
 
-	public void Disable()
+	public void Exit()
 	{
 		_currentTargetPosition = Vector3.zero;
 		_time = 0;
 	}
 
-	private void GetNewPosition(Transform source) => _currentTargetPosition = GetRandomPoint(source);
-
-	private Vector3 GetRandomPoint(Transform source)
+	private Vector3 GetRandomPosition(Transform source)
 	{
 		float xPosition = source.position.x + Random.Range(-_xRange, _xRange);
 		float zPosition = source.position.z + Random.Range(-_zRange, _zRange);

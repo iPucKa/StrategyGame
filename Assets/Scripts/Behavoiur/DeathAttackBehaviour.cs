@@ -4,28 +4,31 @@ public class DeathAttackBehaviour : IBehaviour
 {
 	private readonly ParticleSystem _deathEffect;
 
-	public DeathAttackBehaviour(ParticleSystem deathEffect)
+	private readonly Transform _source;
+
+	public DeathAttackBehaviour(ParticleSystem deathEffect, Transform source)
 	{
 		_deathEffect = deathEffect;
+		_source = source;
 	}
 
-	public void Enter(Transform source, Transform target)
+	public void Enter()
 	{
-		_deathEffect.transform.position = source.transform.position;
+		_deathEffect.transform.position = _source.transform.position;
 
-		source.gameObject.SetActive(false);
+		_source.gameObject.SetActive(false);
 
 		_deathEffect.Play();
 
 		Debug.Log("Очень страшно! Я УМЕР!");
 	}
 
-	public void Update(Transform source, Transform target)
+	public void Update()
 	{
 
 	}
 
-	public void Disable()
+	public void Exit()
 	{
 
 	}

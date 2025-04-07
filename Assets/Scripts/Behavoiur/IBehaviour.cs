@@ -1,10 +1,8 @@
-using UnityEngine;
-
 public interface IBehaviour
 {
-	void Enter(Transform source, Transform target);
+	void Enter();
 
-	void Update(Transform source, Transform target);
+	void Update();
 
-	void Disable();
+	void Exit();
 }
